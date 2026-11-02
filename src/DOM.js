@@ -5,6 +5,11 @@
   Считаем, что всегда передается тег, допускающий вставку текста в качестве своего содержимого (P, DIV, I и пр.).
 */
 export function appendToBody(tag, content, count) {
+    for (let i = 0; i < count; i++) {
+        let element = document.createElement(tag);
+        element.textContent = content;
+        document.body.appendChild(element);
+    }
 }
 
 /*
@@ -15,8 +20,22 @@ export function appendToBody(tag, content, count) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function generateTree(childrenCount, level) {
-}
+    function createNode(currentLevel) {
+        let div = document.createElement('div');
+        div.className = 'item_' + currentLevel;
 
+        if (currentLevel < level) {
+            for (let i = 0; i < childrenCount; i++) {
+                let child = createNode(currentLevel + 1);
+                div.appendChild(child);
+            }
+        }
+
+        return div;
+    }
+
+    return createNode(1);
+}
 /*
   Используйте функцию для создания дерева тегов DIV из предыдущего задания.
   Создайте дерево с вложенностью 3 и числом элементов в каждом узле 2.
@@ -26,4 +45,23 @@ export function generateTree(childrenCount, level) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function replaceNodes() {
+    let tree = generateTree(2, 3);
+
+    let itemsToReplace = tree.querySelectorAll('.item_2');
+
+    for (let i = 0; i < itemsToReplace.length; i++) {
+        let oldNode = itemsToReplace[i];
+
+        let section = document.createElement('section');
+
+        section.className = oldNode.className;
+
+        while (oldNode.firstChild) {
+            section.appendChild(oldNode.firstChild);
+        }
+
+        oldNode.parentNode.replaceChild(section, oldNode);
+    }
+
+    return tree;
 }
